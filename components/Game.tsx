@@ -206,10 +206,14 @@ export default function Game() {
                         </div>
 
                         <div className="glass-card p-6 text-left max-w-xl mx-auto text-sm text-slate-400 leading-relaxed border-white/5">
-                            <h3 className="text-indigo-400 font-bold mb-2">HOW TO PLAY</h3>
-                            <p>Transform $y = ax^2 + bx + c$ into $y = a(x + p)^2 + q$.<br />
-                                Use keys or on-screen pad. Fractions as "num/den".<br />
-                                Shoot for the best time!</p>
+                            <h3 className="text-indigo-400 font-bold mb-2">遊び方</h3>
+                            <p className="mb-2">与えられた式 <code className="text-slate-200">y = ax² + bx + c</code> を、平方完成の形 <code className="text-slate-200">y = a(x + p)² + q</code> に変形してください。</p>
+                            <ul className="list-disc list-inside space-y-1">
+                                <li>空欄を選択して数値を入力（キーボード入力対応）</li>
+                                <li>分数は「分子/分母」の形式で入力（例：1/2, -3/2）</li>
+                                <li><strong>Enter</strong>で SHOOT!（解答送信）</li>
+                                <li><strong>Tab</strong>で入力欄を移動（a → p → q）</li>
+                            </ul>
                         </div>
                     </motion.div>
                 )}
@@ -234,13 +238,25 @@ export default function Game() {
                         <div className={`glass-card p-8 md:p-12 text-center transition-all duration-200 ${isWrong ? 'border-red-500 shadow-[0_0_30px_rgba(244,63,94,0.3)]' : 'border-white/10'}`}>
                             <div className="text-3xl md:text-5xl font-black mb-10 flex items-center justify-center flex-wrap gap-x-2">
                                 <span className="text-slate-500">y =</span>
-                                <MathFraction value={problem.displayA} />
+                                {problem.displayA !== '1' && (
+                                    <>
+                                        {problem.displayA === '-1' ? '−' : <MathFraction value={problem.displayA} />}
+                                    </>
+                                )}
                                 <span className="text-slate-500">x²</span>
-                                <span className="text-slate-400 mx-1">{problem.b.startsWith('-') ? '−' : '+'}</span>
-                                <MathFraction value={problem.b.replace('-', '')} />
-                                <span className="text-slate-500">x</span>
-                                <span className="text-slate-400 mx-1">{problem.c.startsWith('-') ? '−' : '+'}</span>
-                                <MathFraction value={problem.c.replace('-', '')} />
+                                {problem.b !== '0' && (
+                                    <>
+                                        <span className="text-slate-400 mx-1">{problem.b.startsWith('-') ? '−' : '+'}</span>
+                                        {Math.abs(Number(problem.b.split('/')[0])) === 1 && !problem.b.includes('/') ? '' : <MathFraction value={problem.b.replace('-', '')} />}
+                                        <span className="text-slate-500">x</span>
+                                    </>
+                                )}
+                                {problem.c !== '0' && (
+                                    <>
+                                        <span className="text-slate-400 mx-1">{problem.c.startsWith('-') ? '−' : '+'}</span>
+                                        <MathFraction value={problem.c.replace('-', '')} />
+                                    </>
+                                )}
                             </div>
 
                             <div className="flex items-center justify-center gap-2 md:gap-4 text-2xl md:text-4xl font-black">
